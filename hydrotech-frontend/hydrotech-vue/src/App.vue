@@ -56,7 +56,7 @@ const isAppRoute = computed(() => APP_ROUTES.includes(route.path))
 
 // Full-width public routes (no container padding)
 const isFullWidthRoute = computed(() =>
-  ['/', '/login', '/registro', '/monitoramento', '/minha-conta'].includes(route.path)
+  ['/', '/login', '/registro', '/monitoramento'].includes(route.path)
 )
 
 // Provide toast & modal globally
