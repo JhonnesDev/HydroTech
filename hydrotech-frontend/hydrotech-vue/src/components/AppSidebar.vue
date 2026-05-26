@@ -235,8 +235,7 @@ const route = useRoute()
 }
 
 .btn-report:hover:not(:disabled) {
-  background: var(--navy-500);
-  border-color: rgba(255,255,255,0.12);
+  background: var(--bg-elevated);
   transform: none;
 }
 </style>

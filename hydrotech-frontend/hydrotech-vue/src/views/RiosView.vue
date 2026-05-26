@@ -467,7 +467,7 @@ onMounted(async () => {
 }
 
 .form-split-left {
-  background: var(--navy-600);
+  background: var(--bg-elevated);
   padding: 32px 28px;
   display: flex;
   flex-direction: column;
@@ -502,8 +502,8 @@ onMounted(async () => {
 .select-wrapper select:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .form-actions { display: flex; gap: 10px; }
-.btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--navy-500); border: 1px solid var(--navy-400); color: white; padding: 10px 22px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.04em; transition: all var(--transition-normal); text-transform: uppercase; }
-.btn-primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); box-shadow: var(--shadow-glow); transform: translateY(-1px); }
+.btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); border: 1px solid var(--accent-hover); color: white; padding: 10px 22px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.04em; transition: all var(--transition-normal); text-transform: uppercase; }
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); box-shadow: var(--shadow-glow); transform: translateY(-1px); }
 .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--text-secondary); border: 1px solid var(--border); padding: 10px 18px; border-radius: var(--radius-md); font-weight: 600; font-size: 0.82rem; transition: all var(--transition-fast); }
 .btn-secondary:hover:not(:disabled) { background: var(--bg-elevated); color: var(--text-primary); transform: none; }
 .btn-sm { padding: 6px 14px; font-size: 0.78rem; }
