@@ -77,3 +77,6 @@ class JWTOrAPITokenAuthentication(authentication.BaseAuthentication):
 
         jwt_auth = UsuarioJWTAuthentication()
         return jwt_auth.authenticate(request)
+
+    def authenticate_header(self, request):
+        return 'Bearer'
