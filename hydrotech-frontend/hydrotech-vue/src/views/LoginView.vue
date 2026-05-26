@@ -356,10 +356,10 @@ const login = async () => {
   display: flex; align-items: center; justify-content: center; gap: 9px;
   width: 100%; padding: 13px;
   border-radius: var(--radius-md);
-  background: var(--navy-500);
+  background: var(--accent);
   color: white;
   font-weight: 700; font-size: 0.9rem;
-  border: 1px solid var(--navy-400);
+  border: 1px solid var(--accent-hover);
   cursor: pointer; margin-top: 4px;
   transition: all var(--transition-normal);
   letter-spacing: 0.02em;
