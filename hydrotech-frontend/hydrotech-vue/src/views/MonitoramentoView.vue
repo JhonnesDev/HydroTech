@@ -9,7 +9,11 @@
     <header class="mon-topbar">
       <div class="mon-inner">
         <div class="mon-brand">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round">
+  <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+  <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+  <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+</svg>
           <span>HydroTech <b>Monitoramento Público</b></span>
         </div>
         <div class="mon-meta">
@@ -39,7 +43,7 @@
     </div>
 
     <div v-if="loading" class="mon-state">
-      <svg class="spin" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></circle></svg>
+      <svg class="spin" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></circle></svg>
       Carregando dados...
     </div>
 
@@ -308,7 +312,9 @@ const buildChart = (ponto) => {
   if (!canvas) return
   if (charts[ponto.id]) charts[ponto.id].destroy()
   const ctx = canvas.getContext('2d')
-  const nivelColor = ponto.nivel_risco === 3 ? '#EF4444' : ponto.nivel_risco === 2 ? '#F59E0B' : '#10B981'
+  const styles = getComputedStyle(document.documentElement)
+  const riskColors = { 1: styles.getPropertyValue('--risk-low').trim(), 2: styles.getPropertyValue('--risk-medium').trim(), 3: styles.getPropertyValue('--risk-high').trim() }
+  const nivelColor = riskColors[ponto.nivel_risco] || riskColors[1]
   const gradient = ctx.createLinearGradient(0, 0, 0, 300)
   gradient.addColorStop(0, nivelColor + '44')
   gradient.addColorStop(1, nivelColor + '00')
@@ -320,27 +326,30 @@ const buildChart = (ponto) => {
   const atencao = +(base + 0.5).toFixed(2)
   const alerta = +(base + 0.85).toFixed(2)
   const emergencia = +(base + 1.2).toFixed(2)
+  const txtMuted = styles.getPropertyValue('--text-muted').trim()
+  const emergColor = styles.getPropertyValue('--risk-high').trim()
+  const accentColor = styles.getPropertyValue('--accent').trim()
   chartLevels[ponto.id] = { base, variance, emergencia }
   charts[ponto.id] = new Chart(ctx, {
     type: 'line',
     data: {
       labels,
       datasets: [
-        { label: 'Nível (m)', data, borderColor: nivelColor, backgroundColor: gradient, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: nivelColor, pointBorderColor: '#fff', pointBorderWidth: 1.5, fill: true, tension: 0.4 },
-        { label: 'Emergência', data: Array(15).fill(emergencia), borderColor: '#EF4444', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
-        { label: 'Alerta', data: Array(15).fill(alerta), borderColor: '#F97316', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
-        { label: 'Atenção', data: Array(15).fill(atencao), borderColor: '#EAB308', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 }
+        { label: 'Nível (m)', data, borderColor: nivelColor, backgroundColor: gradient, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: nivelColor, pointBorderColor: styles.getPropertyValue('--bg-card').trim() || '#fff', pointBorderWidth: 1.5, fill: true, tension: 0.4 },
+        { label: 'Emergência', data: Array(15).fill(emergencia), borderColor: emergColor, borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
+        { label: 'Alerta', data: Array(15).fill(alerta), borderColor: riskColors[2], borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
+        { label: 'Atenção', data: Array(15).fill(atencao), borderColor: riskColors[2], borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
       plugins: {
-        legend: { display: true, position: 'top', labels: { usePointStyle: true, color: '#64748B', font: { size: 11 } } },
-        tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#38BDF8', padding: 10 }
+        legend: { display: true, position: 'top', labels: { usePointStyle: true, color: txtMuted, font: { size: 11 } } },
+        tooltip: { backgroundColor: styles.getPropertyValue('--bg-elevated').trim() || '#1e293b', titleColor: styles.getPropertyValue('--text-primary').trim(), bodyColor: accentColor, padding: 10 }
       },
       scales: {
-        y: { min: Math.max(0, base-0.6), max: base+1.5, grid: { color: 'rgba(100,116,139,0.1)' }, ticks: { color: '#64748B' } },
-        x: { grid: { display: false }, ticks: { color: '#64748B', maxTicksLimit: 6 } }
+        y: { min: Math.max(0, base-0.6), max: base+1.5, grid: { color: 'rgba(100,116,139,0.1)' }, ticks: { color: txtMuted } },
+        x: { grid: { display: false }, ticks: { color: txtMuted, maxTicksLimit: 6 } }
       }
     }
   })
@@ -493,23 +502,23 @@ onUnmounted(() => {
 }
 
 /* Topbar */
-.mon-topbar { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 24px; position: sticky; top: 0; z-index: 100; }
+.mon-topbar { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 0 24px; position: sticky; top: 0; z-index: 100; }
 .mon-inner { max-width: 1300px; margin: 0 auto; position: relative; z-index: 2; }
 .mon-inner.row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .mon-topbar .mon-inner { display: flex; align-items: center; justify-content: space-between; height: 58px; }
 .mon-brand { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--text-secondary); }
 .mon-brand b { color: var(--accent); }
 .mon-meta { display: flex; align-items: center; gap: 14px; }
-.live-pill { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 800; color: #EF4444; background: rgba(239,68,68,0.1); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(239,68,68,0.2); letter-spacing: .5px; }
-.live-dot { width: 7px; height: 7px; background: #EF4444; border-radius: 50%; animation: pulse 1.4s infinite; }
+.live-pill { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 800; color: var(--risk-high); background: var(--risk-high-bg); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--risk-high); letter-spacing: .5px; }
+.live-dot { width: 7px; height: 7px; background: var(--risk-high); border-radius: 50%; animation: pulse 1.4s infinite; }
 .upd-time { font-size: 0.75rem; color: var(--text-muted); }
 .back-lnk { font-size: 0.8rem; color: var(--accent); text-decoration: none; font-weight: 600; }
 .back-lnk:hover { opacity: .7; }
 
 /* Filter bar */
-.mon-filter-bar { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 10px 24px; position: relative; z-index: 2; }
+.mon-filter-bar { background: var(--glass-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border); padding: 10px 24px; position: relative; z-index: 2; }
 .frow { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); }
-.f-sel { padding: 7px 12px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.1); background: rgba(30, 41, 59, 0.6); color: var(--text-primary); font-size: 0.85rem; }
+.f-sel { padding: 7px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font-size: 0.85rem; }
 .fstats { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .fs { font-size: 0.73rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
 .fs-t { background: rgba(56, 189, 248, 0.1); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.2); }
@@ -529,16 +538,16 @@ onUnmounted(() => {
 .estado-count { font-size: 0.75rem; font-weight: 600; background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 20px; margin-left: 4px; border: 1px solid rgba(56, 189, 248, 0.2); }
 
 /* Rio Block */
-.rio-block { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.rio-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.rio-block { background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-lg); }
+.rio-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border-light); }
 .rio-hdr.risk--high { border-left: 4px solid var(--risk-high); }
 .rio-hdr.risk--medium { border-left: 4px solid var(--risk-medium); }
 .rio-hdr.risk--low { border-left: 4px solid var(--risk-low); }
 .rio-hdr-l { display: flex; align-items: center; gap: 12px; }
 .rio-icon { width: 42px; height: 42px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; }
-.rio-icon.risk--high { background: rgba(239, 68, 68, 0.1); color: var(--risk-high); }
-.rio-icon.risk--medium { background: rgba(245, 158, 11, 0.1); color: var(--risk-medium); }
-.rio-icon.risk--low { background: rgba(16,185,129,.12); color: var(--risk-low); }
+.rio-icon.risk--high { background: var(--risk-high-bg); color: var(--risk-high); }
+.rio-icon.risk--medium { background: var(--risk-medium-bg); color: var(--risk-medium); }
+.rio-icon.risk--low { background: var(--risk-low-bg); color: var(--risk-low); }
 .rio-name { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
 .rio-loc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
 .rio-hdr-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -546,8 +555,8 @@ onUnmounted(() => {
 .risk-chip.risk--high { background: rgba(239, 68, 68, 0.15); color: var(--risk-high); border: 1px solid rgba(239, 68, 68, 0.3); }
 .risk-chip.risk--medium { background: rgba(245, 158, 11, 0.15); color: var(--risk-medium); border: 1px solid rgba(245, 158, 11, 0.3); }
 .risk-chip.risk--low { background: rgba(16,185,129,.15); color: var(--risk-low); border: 1px solid rgba(16, 185, 129, 0.3); }
-.abtn { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.1); background: rgba(30, 41, 59, 0.4); color: var(--text-muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .2s; backdrop-filter: blur(4px); }
-.abtn:hover { border-color: var(--accent); color: var(--accent); background: rgba(30, 41, 59, 0.8); }
+.abtn { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .2s; backdrop-filter: blur(4px); }
+.abtn:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-card-hover); }
 .abtn--fav { color: #F59E0B; border-color: #F59E0B; background: rgba(245,158,11,.08); }
 .abtn--alr { color: var(--accent); border-color: var(--accent); background: rgba(56, 189, 248, 0.1); }
 
@@ -572,17 +581,17 @@ onUnmounted(() => {
 }
 
 /* Chart Card — Glassmorphism */
-.chart-card { background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-xl); overflow: hidden; backdrop-filter: blur(10px); }
-.chart-card-hdr { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 10px; }
+.chart-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; backdrop-filter: blur(10px); }
+.chart-card-hdr { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--border-light); gap: 10px; }
 .chart-card-title { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; color: var(--text-primary); }
 .chart-card-sub { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; }
-.nlv--alto { color: #EF4444; font-weight: 700; }
-.nlv--medio { color: #F59E0B; font-weight: 700; }
-.nlv--baixo { color: #10B981; font-weight: 700; }
-.live-badge { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 800; color: #EF4444; background: rgba(239,68,68,.1); padding: 4px 9px; border-radius: 8px; border: 1px solid rgba(239,68,68,.2); flex-shrink: 0; }
+.nlv--alto { color: var(--risk-high); font-weight: 700; }
+.nlv--medio { color: var(--risk-medium); font-weight: 700; }
+.nlv--baixo { color: var(--risk-low); font-weight: 700; }
+.live-badge { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 800; color: var(--risk-high); background: var(--risk-high-bg); padding: 4px 9px; border-radius: 8px; border: 1px solid var(--risk-high); flex-shrink: 0; }
 .chart-canvas-wrap { height: 300px; padding: 18px 20px; }
 
-.mon-footer { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.05); padding: 14px 24px; text-align: center; font-size: 0.73rem; color: var(--text-muted); position: relative; z-index: 2; }
+.mon-footer { background: var(--glass-bg); backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border); padding: 14px 24px; text-align: center; font-size: 0.73rem; color: var(--text-muted); position: relative; z-index: 2; }
 
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
 .spin { animation: spin .8s linear infinite; }
@@ -616,9 +625,9 @@ onUnmounted(() => {
   z-index: 100;
   width: 650px;
   max-width: 90vw;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(99, 102, 241, 0.15);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xl);
   border-radius: var(--radius-lg);
   backdrop-filter: blur(12px);
   padding: 20px;
@@ -648,7 +657,7 @@ onUnmounted(() => {
 .skeleton-pill {
   width: 120px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-md);
   position: relative;
   overflow: hidden;
@@ -657,7 +666,7 @@ onUnmounted(() => {
   content: "";
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  background: linear-gradient(90deg, transparent, var(--border-light), transparent);
   transform: translateX(-100%);
   animation: shimmer 1.5s infinite;
 }
@@ -668,7 +677,7 @@ onUnmounted(() => {
 }
 .skeleton-line {
   height: 14px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-sm);
   position: relative;
   overflow: hidden;
@@ -678,7 +687,7 @@ onUnmounted(() => {
   content: "";
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  background: linear-gradient(90deg, transparent, var(--border-light), transparent);
   transform: translateX(-100%);
   animation: shimmer 1.5s infinite;
 }
@@ -704,7 +713,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-light);
   padding-bottom: 12px;
 }
 .gemini-brand {
@@ -713,7 +722,7 @@ onUnmounted(() => {
   gap: 8px;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #e0e7ff;
+  color: var(--text-primary);
 }
 .gemini-icon {
   color: #818cf8;
@@ -742,8 +751,8 @@ onUnmounted(() => {
   gap: 8px;
 }
 .metric-item {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   padding: 8px 12px;
   display: flex;
@@ -752,8 +761,8 @@ onUnmounted(() => {
   transition: all var(--transition-fast);
 }
 .metric-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(99, 102, 241, 0.2);
+  background: var(--bg-card-hover);
+  border-color: var(--accent);
 }
 .metric-icon {
   font-size: 1.5rem;
@@ -772,7 +781,7 @@ onUnmounted(() => {
 }
 .metric-val {
   font-size: 0.78rem;
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 600;
   line-height: 1.2;
 }
@@ -793,7 +802,7 @@ onUnmounted(() => {
 .gemini-desc p {
   font-size: 0.875rem;
   line-height: 1.6;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   white-space: pre-line;
 }
 .gemini-curiosidade {
@@ -804,13 +813,13 @@ onUnmounted(() => {
 }
 .gemini-curiosidade p {
   font-size: 0.85rem;
-  color: #e2e8f0;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 .gemini-error {
-  color: #fca5a5;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--risk-high);
+  background: var(--risk-high-bg);
+  border: 1px solid var(--risk-high);
   padding: 16px;
   border-radius: var(--radius-md);
   text-align: center;
