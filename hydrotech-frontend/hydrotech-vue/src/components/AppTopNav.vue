@@ -264,7 +264,7 @@ onUnmounted(() => {
 
 .topnav-icon-btn:hover:not(:disabled) {
   color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--border);
   background: var(--bg-tertiary);
   transform: none;
 }

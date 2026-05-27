@@ -250,7 +250,8 @@ const initCharts = () => {
     const canvas = chartCanvases.value[ponto.id]
     if (!canvas) return
     const ctx = canvas.getContext('2d')
-    const nivelColor = ponto.nivel_risco === 3 ? '#DC2626' : ponto.nivel_risco === 2 ? '#D97706' : '#10B981'
+    const riskColors = { 1: getComputedStyle(document.documentElement).getPropertyValue('--risk-low').trim(), 2: getComputedStyle(document.documentElement).getPropertyValue('--risk-medium').trim(), 3: getComputedStyle(document.documentElement).getPropertyValue('--risk-high').trim() };
+const nivelColor = riskColors[ponto.nivel_risco] || getComputedStyle(document.documentElement).getPropertyValue('--risk-low').trim();
     const gradient = ctx.createLinearGradient(0, 0, 0, 220)
     gradient.addColorStop(0, nivelColor + '40')
     gradient.addColorStop(1, nivelColor + '05')
@@ -273,20 +274,20 @@ const initCharts = () => {
         labels,
         datasets: [
           { label: 'Nível (m)', data, borderColor: nivelColor, backgroundColor: gradient, borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, pointBackgroundColor: nivelColor, pointBorderColor: 'transparent', fill: true, tension: 0.4 },
-          { label: 'Emergência', data: Array(15).fill(emergencia), borderColor: '#DC2626', borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
-          { label: 'Alerta', data: Array(15).fill(alerta), borderColor: '#F97316', borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
-          { label: 'Atenção', data: Array(15).fill(atencao), borderColor: '#D97706', borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false }
+          { label: 'Emergência', data: Array(15).fill(emergencia), borderColor: riskColors[3], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
+          { label: 'Alerta', data: Array(15).fill(alerta), borderColor: riskColors[2], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
+          { label: 'Atenção', data: Array(15).fill(atencao), borderColor: riskColors[2], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false }
         ]
       },
       options: {
         responsive: true, maintainAspectRatio: false, animation: { duration: 300 },
         plugins: {
-          legend: { display: true, position: 'top', labels: { usePointStyle: true, color: '#4F6D8A', font: { size: 10 }, boxWidth: 8 } },
-          tooltip: { backgroundColor: '#0D1B2E', titleColor: '#F1F5F9', bodyColor: '#8AA6C1', borderColor: 'rgba(255,255,255,0.08)', borderWidth: 1, padding: 10 }
+          legend: { display: true, position: 'top', labels: { usePointStyle: true, color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim(), font: { size: 10 }, boxWidth: 8 } },
+          tooltip: { backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-elevated').trim() || '#0D1B2E', titleColor: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(), bodyColor: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), borderColor: 'rgba(0,0,0,0.08)', borderWidth: 1, padding: 10 }
         },
         scales: {
-          y: { min: Math.max(0, base - 0.6), max: base + 1.5, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4F6D8A', font: { size: 10 } } },
-          x: { grid: { display: false }, ticks: { color: '#4F6D8A', maxTicksLimit: 6, font: { size: 10 } } }
+          y: { min: Math.max(0, base - 0.6), max: base + 1.5, grid: { color: 'rgba(100,116,139,0.1)' }, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim(), font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim(), maxTicksLimit: 6, font: { size: 10 } } }
         }
       }
     })
@@ -346,7 +347,7 @@ onUnmounted(() => { if (chartInterval) clearInterval(chartInterval); Object.valu
   border-radius: var(--radius-lg); padding: 20px 22px;
   transition: border-color var(--transition-fast), transform var(--transition-normal);
 }
-.stat-card:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-2px); }
+.stat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
 .stat-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
 

@@ -154,7 +154,7 @@ defineExpose({ show })
 }
 
 .modal-btn--danger:hover {
-  background: #DC2626;
+  background: var(--risk-high);
   transform: none;
 }
 

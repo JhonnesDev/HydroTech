@@ -68,7 +68,7 @@ const currentYear = computed(() => new Date().getFullYear())
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  background: var(--accent-gradient);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -159,7 +159,7 @@ onUnmounted(() => {
 }
 
 .header--scrolled {
-  box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .header-container {
@@ -188,7 +188,7 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  background: var(--nav-bg);
   color: white;
 }
 
@@ -268,7 +268,7 @@ onUnmounted(() => {
 .btn-enter {
   display: inline-flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
   padding: 8px 20px;
   border-radius: 8px;
@@ -289,7 +289,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   background: rgba(139, 92, 246, 0.1);
-  color: #A78BFA;
+  color: var(--text-primary);
   padding: 8px 18px;
   border-radius: 8px;
   border: 1px solid rgba(139, 92, 246, 0.2);
@@ -325,7 +325,7 @@ onUnmounted(() => {
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #0EA5E9, #6366F1);
+  background: var(--accent-gradient);
   color: white;
 }
 
@@ -341,8 +341,8 @@ onUnmounted(() => {
   gap: 6px;
   padding: 7px 14px;
   border-radius: 8px;
-  background: rgba(239, 68, 68, 0.08);
-  color: #EF4444;
+  background: var(--risk-high-bg);
+  color: var(--risk-high);
   font-weight: 600;
   font-size: 0.82rem;
   border: 1px solid rgba(239, 68, 68, 0.15);
@@ -363,13 +363,13 @@ onUnmounted(() => {
   width: 34px;
   height: 34px;
   border-radius: 6px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #94A3B8;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 }
-.theme-toggle:hover { color: #60A5FA; border-color: rgba(59,130,246,0.3); transform: none; }
+.theme-toggle:hover { color: var(--accent); border-color: rgba(59,130,246,0.3); transform: none; }
 
 /* Hamburger */
 .hamburger {
@@ -380,8 +380,8 @@ onUnmounted(() => {
   width: 36px;
   height: 36px;
   border-radius: 6px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
   gap: 5px;
   padding: 0;
   cursor: pointer;
@@ -391,7 +391,7 @@ onUnmounted(() => {
   display: block;
   width: 16px;
   height: 2px;
-  background: #F1F5F9;
+  background: var(--text-primary);
   border-radius: 2px;
   transition: all 0.3s ease;
   transform-origin: center;
@@ -411,7 +411,7 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: #0B1120;
+    background: var(--bg-primary);
     flex-direction: column;
     align-items: stretch;
     padding: 20px;
@@ -431,13 +431,13 @@ onUnmounted(() => {
     gap: 10px;
     margin-top: auto;
     padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid var(--border);
   }
 
   .btn-cta-mobile {
     display: block;
     text-align: center;
-    background: #2563EB;
+    background: var(--accent);
     color: white;
     padding: 14px;
     border-radius: 6px;
@@ -448,8 +448,8 @@ onUnmounted(() => {
   .btn-logout-mobile {
     padding: 14px;
     border-radius: 6px;
-    background: rgba(220,38,38,0.1);
-    color: #EF4444;
+    background: var(--risk-high-bg);
+    color: var(--risk-high);
     font-weight: 600;
     border: none;
     cursor: pointer;

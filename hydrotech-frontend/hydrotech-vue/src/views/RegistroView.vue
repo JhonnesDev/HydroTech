@@ -433,9 +433,9 @@ const handleRegistro = async () => {
   transition: width 0.3s ease, background-color 0.3s ease;
 }
 
-.pw-fill.pw-weak { background-color: #EF4444; }
-.pw-fill.pw-medium { background-color: #F59E0B; }
-.pw-fill.pw-strong { background-color: #10B981; }
+.pw-fill.pw-weak { background-color: var(--risk-high); }
+.pw-fill.pw-medium { background-color: var(--risk-medium); }
+.pw-fill.pw-strong { background-color: var(--risk-low); }
 
 .pw-label-text {
   font-size: 0.72rem;
@@ -443,9 +443,9 @@ const handleRegistro = async () => {
   white-space: nowrap;
 }
 
-.pw-label-text.pw-weak { color: #EF4444; }
-.pw-label-text.pw-medium { color: #F59E0B; }
-.pw-label-text.pw-strong { color: #10B981; }
+.pw-label-text.pw-weak { color: var(--risk-high); }
+.pw-label-text.pw-medium { color: var(--risk-medium); }
+.pw-label-text.pw-strong { color: var(--risk-low); }
 
 /* Password Requirements */
 .pw-requirements {
@@ -473,11 +473,11 @@ const handleRegistro = async () => {
 }
 
 .pw-requirements li.met {
-  color: #10B981;
+  color: var(--risk-low);
 }
 
 .pw-requirements li.met svg {
-  color: #10B981;
+  color: var(--risk-low);
   opacity: 1;
 }
 
@@ -535,13 +535,13 @@ const handleRegistro = async () => {
 
 .error-msg {
   background: rgba(239, 68, 68, 0.08);
-  color: #EF4444;
+  color: var(--risk-high);
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .success-msg {
   background: rgba(16, 185, 129, 0.08);
-  color: #10B981;
+  color: var(--risk-low);
   border: 1px solid rgba(16, 185, 129, 0.2);
 }
 

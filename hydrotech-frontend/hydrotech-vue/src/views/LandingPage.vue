@@ -254,7 +254,7 @@ const audiences = ref([
   right: -20%;
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+  background: radial-gradient(circle at center, var(--accent), var(--bg-primary));
   pointer-events: none;
   z-index: 1;
 }
@@ -269,7 +269,7 @@ const audiences = ref([
 .hero-badge {
   display: inline-block;
   background: rgba(59,130,246,0.15);
-  color: #60A5FA;
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -637,7 +637,7 @@ const audiences = ref([
 
 /* ═══ CTA ═══ */
 .cta-section {
-  background: linear-gradient(135deg, #0F2557 0%, #122B6A 40%, #1A3A8A 100%);
+  background: var(--bg-primary);
   padding: 80px 24px;
 }
 
@@ -658,14 +658,14 @@ const audiences = ref([
 .cta-inner h2 {
   font-size: 2.2rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   margin-bottom: 14px;
 }
 
 .cta-inner p {
   font-size: 1rem;
-  color: rgba(255,255,255,0.7);
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 32px;
 }
