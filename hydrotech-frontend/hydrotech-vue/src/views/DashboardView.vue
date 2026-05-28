@@ -256,16 +256,16 @@ const nivelColor = riskColors[ponto.nivel_risco] || getComputedStyle(document.do
     gradient.addColorStop(0, nivelColor + '40')
     gradient.addColorStop(1, nivelColor + '05')
     const baseMap = { 1: 0.8, 2: 1.4, 3: 2.0 }
-    const base = baseMap[ponto.nivel_risco] || 1.0
+    const base = (ponto.nivel_base !== null && ponto.nivel_base !== undefined) ? parseFloat(ponto.nivel_base) : (baseMap[ponto.nivel_risco] || 1.0)
     const variance = 0.25
     const data = Array.from({ length: 15 }, () => (base + (Math.random() * variance * 2 - variance)).toFixed(2))
     const labels = Array.from({ length: 15 }, (_, i) => {
       const d = new Date(); d.setSeconds(d.getSeconds() - (15 - i) * 10)
       return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
     })
-    const atencao = (base + 0.5).toFixed(2)
-    const alerta = (base + 0.85).toFixed(2)
-    const emergencia = (base + 1.2).toFixed(2)
+    const atencao = (ponto.limite_atencao !== null && ponto.limite_atencao !== undefined) ? parseFloat(ponto.limite_atencao) : +(base + 0.5).toFixed(2)
+    const alerta = (ponto.limite_alerta !== null && ponto.limite_alerta !== undefined) ? parseFloat(ponto.limite_alerta) : +(base + 0.85).toFixed(2)
+    const emergencia = (ponto.limite_emergencia !== null && ponto.limite_emergencia !== undefined) ? parseFloat(ponto.limite_emergencia) : +(base + 1.2).toFixed(2)
     chartLevels[ponto.id] = { base, variance, emergenciaLevel: parseFloat(emergencia) }
 
     chartInstances[ponto.id] = new Chart(ctx, {
@@ -273,10 +273,10 @@ const nivelColor = riskColors[ponto.nivel_risco] || getComputedStyle(document.do
       data: {
         labels,
         datasets: [
-          { label: 'Nível (m)', data, borderColor: nivelColor, backgroundColor: gradient, borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, pointBackgroundColor: nivelColor, pointBorderColor: 'transparent', fill: true, tension: 0.4 },
-          { label: 'Emergência', data: Array(15).fill(emergencia), borderColor: riskColors[3], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
-          { label: 'Alerta', data: Array(15).fill(alerta), borderColor: riskColors[2], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
-          { label: 'Atenção', data: Array(15).fill(atencao), borderColor: riskColors[2], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false }
+          { label: 'Altura do Rio', data, borderColor: nivelColor, backgroundColor: gradient, borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, pointBackgroundColor: nivelColor, pointBorderColor: 'transparent', fill: true, tension: 0.4 },
+          { label: 'Alto', data: Array(15).fill(emergencia), borderColor: riskColors[3], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
+          { label: 'Médio', data: Array(15).fill(alerta), borderColor: riskColors[2], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
+          { label: 'Baixo', data: Array(15).fill(atencao), borderColor: riskColors[2], borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false }
         ]
       },
       options: {
@@ -286,7 +286,7 @@ const nivelColor = riskColors[ponto.nivel_risco] || getComputedStyle(document.do
           tooltip: { backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-elevated').trim() || '#0D1B2E', titleColor: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(), bodyColor: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), borderColor: 'rgba(0,0,0,0.08)', borderWidth: 1, padding: 10 }
         },
         scales: {
-          y: { min: Math.max(0, base - 0.6), max: base + 1.5, grid: { color: 'rgba(100,116,139,0.1)' }, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim(), font: { size: 10 } } },
+          y: { min: Math.max(0, base - 0.6), max: Math.max(base + 1.5, parseFloat(emergencia) + 0.3), grid: { color: 'rgba(100,116,139,0.1)' }, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim(), font: { size: 10 } } },
           x: { grid: { display: false }, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim(), maxTicksLimit: 6, font: { size: 10 } } }
         }
       }

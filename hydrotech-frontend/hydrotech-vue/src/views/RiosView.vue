@@ -189,6 +189,22 @@
               <option value="3">🔴 Alto</option>
             </select>
           </div>
+          <div class="form-group">
+            <label>Altura do Rio (m)</label>
+            <input v-model.number="pontoForm.nivel_base" type="number" step="0.1" placeholder="Ex: 1.0" required />
+          </div>
+          <div class="form-group">
+            <label>Baixo (m)</label>
+            <input v-model.number="pontoForm.limite_atencao" type="number" step="0.1" placeholder="Ex: 1.5" required />
+          </div>
+          <div class="form-group">
+            <label>Médio (m)</label>
+            <input v-model.number="pontoForm.limite_alerta" type="number" step="0.1" placeholder="Ex: 2.5" required />
+          </div>
+          <div class="form-group">
+            <label>Alto (m)</label>
+            <input v-model.number="pontoForm.limite_emergencia" type="number" step="0.1" placeholder="Ex: 3.5" required />
+          </div>
         </div>
         <div class="form-actions">
           <button class="btn-primary" @click="savePonto" :disabled="savingPonto">
@@ -248,7 +264,7 @@ const expandedRio = ref(null)
 const pontos = ref([])
 const loadingPontos = ref(false)
 const savingPonto = ref(false)
-const pontoForm = ref({ id: null, latitude: '', longitude: '', descricao: '', nivel_risco: '' })
+const pontoForm = ref({ id: null, latitude: '', longitude: '', descricao: '', nivel_risco: '', nivel_base: '', limite_atencao: '', limite_alerta: '', limite_emergencia: '' })
 
 const togglePontos = async (rio) => {
   if (expandedRio.value === rio.id) {
@@ -273,7 +289,7 @@ const loadPontos = async (rioId) => {
 }
 
 const savePonto = async () => {
-  if (!pontoForm.value.latitude || !pontoForm.value.longitude || !pontoForm.value.nivel_risco || !pontoForm.value.descricao) {
+  if (!pontoForm.value.latitude || !pontoForm.value.longitude || !pontoForm.value.nivel_risco || !pontoForm.value.descricao || pontoForm.value.nivel_base === '' || pontoForm.value.limite_atencao === '' || pontoForm.value.limite_alerta === '' || pontoForm.value.limite_emergencia === '') {
     toast?.warning('Campos obrigatórios', 'Preencha todos os campos do ponto de risco.')
     return
   }
@@ -302,7 +318,7 @@ const editPonto = (p) => {
 }
 
 const resetPonto = () => {
-  pontoForm.value = { id: null, latitude: '', longitude: '', descricao: '', nivel_risco: '' }
+  pontoForm.value = { id: null, latitude: '', longitude: '', descricao: '', nivel_risco: '', nivel_base: '', limite_atencao: '', limite_alerta: '', limite_emergencia: '' }
 }
 
 const removePonto = async (id) => {

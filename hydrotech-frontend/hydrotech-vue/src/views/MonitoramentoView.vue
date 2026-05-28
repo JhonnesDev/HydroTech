@@ -319,13 +319,13 @@ const buildChart = (ponto) => {
   gradient.addColorStop(0, nivelColor + '44')
   gradient.addColorStop(1, nivelColor + '00')
   const baseMap = { 1: 0.8, 2: 1.4, 3: 2.0 }
-  const base = baseMap[ponto.nivel_risco] || 1.0
+  const base = (ponto.nivel_base !== null && ponto.nivel_base !== undefined) ? parseFloat(ponto.nivel_base) : (baseMap[ponto.nivel_risco] || 1.0)
   const variance = 0.25
   const labels = Array.from({ length: 15 }, (_, i) => { const d = new Date(); d.setSeconds(d.getSeconds() - (14-i)*10); return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) })
   const data = Array.from({ length: 15 }, () => +(base + (Math.random()*variance*2 - variance)).toFixed(2))
-  const atencao = +(base + 0.5).toFixed(2)
-  const alerta = +(base + 0.85).toFixed(2)
-  const emergencia = +(base + 1.2).toFixed(2)
+  const atencao = (ponto.limite_atencao !== null && ponto.limite_atencao !== undefined) ? parseFloat(ponto.limite_atencao) : +(base + 0.5).toFixed(2)
+  const alerta = (ponto.limite_alerta !== null && ponto.limite_alerta !== undefined) ? parseFloat(ponto.limite_alerta) : +(base + 0.85).toFixed(2)
+  const emergencia = (ponto.limite_emergencia !== null && ponto.limite_emergencia !== undefined) ? parseFloat(ponto.limite_emergencia) : +(base + 1.2).toFixed(2)
   const txtMuted = styles.getPropertyValue('--text-muted').trim()
   const emergColor = styles.getPropertyValue('--risk-high').trim()
   const accentColor = styles.getPropertyValue('--accent').trim()
@@ -335,10 +335,10 @@ const buildChart = (ponto) => {
     data: {
       labels,
       datasets: [
-        { label: 'Nível (m)', data, borderColor: nivelColor, backgroundColor: gradient, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: nivelColor, pointBorderColor: styles.getPropertyValue('--bg-card').trim() || '#fff', pointBorderWidth: 1.5, fill: true, tension: 0.4 },
-        { label: 'Emergência', data: Array(15).fill(emergencia), borderColor: emergColor, borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
-        { label: 'Alerta', data: Array(15).fill(alerta), borderColor: riskColors[2], borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
-        { label: 'Atenção', data: Array(15).fill(atencao), borderColor: riskColors[2], borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 }
+        { label: 'Altura do Rio', data, borderColor: nivelColor, backgroundColor: gradient, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: nivelColor, pointBorderColor: styles.getPropertyValue('--bg-card').trim() || '#fff', pointBorderWidth: 1.5, fill: true, tension: 0.4 },
+        { label: 'Alto', data: Array(15).fill(emergencia), borderColor: emergColor, borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
+        { label: 'Médio', data: Array(15).fill(alerta), borderColor: riskColors[2], borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 },
+        { label: 'Baixo', data: Array(15).fill(atencao), borderColor: riskColors[2], borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false, tension: 0 }
       ]
     },
     options: {
@@ -348,7 +348,7 @@ const buildChart = (ponto) => {
         tooltip: { backgroundColor: styles.getPropertyValue('--bg-elevated').trim() || '#1e293b', titleColor: styles.getPropertyValue('--text-primary').trim(), bodyColor: accentColor, padding: 10 }
       },
       scales: {
-        y: { min: Math.max(0, base-0.6), max: base+1.5, grid: { color: 'rgba(100,116,139,0.1)' }, ticks: { color: txtMuted } },
+        y: { min: Math.max(0, base-0.6), max: Math.max(base+1.5, emergencia+0.3), grid: { color: 'rgba(100,116,139,0.1)' }, ticks: { color: txtMuted } },
         x: { grid: { display: false }, ticks: { color: txtMuted, maxTicksLimit: 6 } }
       }
     }
