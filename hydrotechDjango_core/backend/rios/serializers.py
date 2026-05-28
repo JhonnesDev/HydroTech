@@ -41,7 +41,7 @@ class PontoRiscoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PontoRisco
-        fields = ['id', 'rio', 'rio_nome', 'latitude', 'longitude', 'descricao', 'nivel_risco', 'favorito', 'criado_por', 'criado_por_nome', 'criado_em', 'atualizado_em']
+        fields = ['id', 'rio', 'rio_nome', 'latitude', 'longitude', 'descricao', 'nivel_risco', 'nivel_base', 'limite_atencao', 'limite_alerta', 'limite_emergencia', 'favorito', 'criado_por', 'criado_por_nome', 'criado_em', 'atualizado_em']
         read_only_fields = ['criado_por', 'criado_por_nome', 'criado_em', 'atualizado_em']
 
     def get_favorito(self, obj):
@@ -70,4 +70,17 @@ class PontoRiscoSerializer(serializers.ModelSerializer):
         if value not in [1, 2, 3]:
             raise serializers.ValidationError('Nível de risco deve ser 1 (Baixo), 2 (Médio) ou 3 (Alto).')
         return value
+
+    def validate_nivel_base(self, value):
+        if value is not None and value < 0:
+            raise serializers.ValidationError('Nível base deve ser um valor positivo.')
+        return value
+
+    def validate(self, data):
+        atencao = data.get('limite_atencao', 1.5)
+        alerta = data.get('limite_alerta', 2.5)
+        emergencia = data.get('limite_emergencia', 3.5)
+        if not (atencao < alerta < emergencia):
+            raise serializers.ValidationError('Os limites devem seguir a ordem: Atenção < Alerta < Emergência.')
+        return data
 
