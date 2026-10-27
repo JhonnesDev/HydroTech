@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: hydrotech-api
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: hydrotechDjango_core/backend
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && gunicorn app.wsgi_prod:application --bind 0.0.0.0:$PORT --workers 1 --timeout 60 --access-logfile -
+    healthCheckPath: /saude/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DEBUG
+        value: "False"
+      - key: TRUST_PROXY_HTTPS
+        value: "True"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: .onrender.com,localhost,127.0.0.1
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://hydro-tech-sand.vercel.app
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hydrotech-postgres
+          property: connectionString
+
+databases:
+  - name: hydrotech-postgres
+    plan: free
+    region: oregon
+    databaseName: hydrotech
+    user: hydrotech

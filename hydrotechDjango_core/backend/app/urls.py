@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.http import JsonResponse
 from rest_framework_simplejwt.views import TokenRefreshView
 from usuarios.views import (
     UsuarioCreatedListView,
@@ -20,7 +21,12 @@ from rios.views import (
 )
 
 
+from rios.previsao_views import ForecastView, ReadingView
+
 urlpatterns = [
+    path('saude/', lambda request: JsonResponse({'status': 'ok'}), name='saude'),
+    path('pontos-risco/<int:pk>/previsao/', ForecastView.as_view(), name='ponto-previsao'),
+    path('pontos-risco/<int:pk>/medicoes/', ReadingView.as_view(), name='ponto-medicoes'),
     path('admin/', admin.site.urls),
     path('usuarios/', UsuarioCreatedListView.as_view(), name='usuario-list-create'),
     path('usuarios/<int:pk>', UsuarioRetriveUpdateDestroyView.as_view(), name='usuario-detail-view'),

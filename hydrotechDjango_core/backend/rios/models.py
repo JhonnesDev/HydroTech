@@ -42,3 +42,13 @@ class PontoRisco(models.Model):
 
     def __str__(self):
         return f"Ponto de Risco - {self.rio.nome} ({self.get_nivel_risco_display()})"
+
+
+class Medicao(models.Model):
+    ponto = models.ForeignKey(PontoRisco, on_delete=models.CASCADE, related_name='medicoes')
+    nivel = models.FloatField(help_text='Nível da água em metros')
+    registrado_em = models.DateTimeField()
+
+    class Meta:
+        ordering = ['registrado_em']
+        constraints = [models.UniqueConstraint(fields=['ponto', 'registrado_em'], name='medicao_ponto_horario_unico')]

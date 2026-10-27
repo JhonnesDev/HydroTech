@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/((?!assets/|favicon.ico|images/|hero_bg.png|features_bg.png).*)", "destination": "/index.html" }
+  ]
+}

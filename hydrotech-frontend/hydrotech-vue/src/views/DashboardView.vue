@@ -9,7 +9,7 @@
       </div>
       <div class="live-badge" v-if="!loading">
         <span class="live-pulse"></span>
-        Atualizações ao Vivo Ativas
+        Gráficos de demonstração
       </div>
     </div>
 
@@ -128,11 +128,12 @@
                       </span>
                     </p>
                   </div>
-                  <span class="live-tag"><span class="live-dot"></span>Ao Vivo</span>
+                  <span class="live-tag">Gráfico simulado</span>
                 </div>
                 <div class="chart-wrap">
                   <canvas :ref="el => setChartRef(el, ponto.id)"></canvas>
                 </div>
+                <PrevisaoIA :ponto-id="ponto.id" />
               </div>
             </div>
           </div>
@@ -147,6 +148,7 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import api from '../services/api'
 import Chart from 'chart.js/auto'
+import PrevisaoIA from '@/components/PrevisaoIA.vue'
 
 const chartCanvases = ref({})
 let chartInstances = {}

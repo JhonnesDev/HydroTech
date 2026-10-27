@@ -14,6 +14,7 @@ import os
 import logging
 from pathlib import Path
 from datetime import timedelta
+from urllib.parse import urlparse, parse_qs, unquote
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -149,6 +150,23 @@ else:
     }
 
 
+# Render supplies a PostgreSQL connection URL; keep existing local configuration.
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    parsed = urlparse(database_url)
+    if parsed.scheme not in ('postgres', 'postgresql'):
+        raise ValueError('DATABASE_URL must use PostgreSQL.')
+    DATABASES = {'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': unquote(parsed.path.lstrip('/')),
+        'USER': unquote(parsed.username or ''),
+        'PASSWORD': unquote(parsed.password or ''),
+        'HOST': parsed.hostname,
+        'PORT': parsed.port or 5432,
+        'CONN_MAX_AGE': 60,
+        'OPTIONS': {'sslmode': parse_qs(parsed.query).get('sslmode', ['require'])[0]},
+    }}
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -259,6 +277,9 @@ LOGS_DIR.mkdir(exist_ok=True)
 
 # Security Settings
 if not DEBUG:
+    # Enable only behind a trusted proxy that replaces this header (Render).
+    if os.getenv('TRUST_PROXY_HTTPS') == 'True':
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
